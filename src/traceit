@@ -1,0 +1,85 @@
+#!/bin/bash
+# Script to modify /etc/trace.conf on the fly.
+#
+# $Id$
+
+conf=${TRACECONF:-/etc/trace.conf}
+
+Die() {
+  echo "$(basename $0): $*" 0>&2
+  exit 1
+}
+
+Usage() {
+  echo ""
+  echo "Usage: $(basename $0) [+|-] PROGRAM [SOURCE] FUNCTION"
+  echo "       $(basename $0) ."
+  echo "       $(basename $0) / [PROGRAM]"
+  echo "Append a trace configuration to $conf and then signal the program."
+  echo "Use a single . argument to list the trace configuration."
+  echo "Use / with a program name to reload the trace setting for a given program." 
+  echo ""
+  echo "Version: \$Id$ "
+  echo ""
+}
+
+if [ $# = 0 ]
+then
+  Usage
+  exit 0
+fi
+
+for arg in $*
+do
+  if [ "$arg" = "--help" ]
+  then
+    Usage
+    exit 0
+  fi
+done
+
+if [ "$1" = "-" -o "$1" = "+" -o "$1" = "." -o "$1" = "/" ]
+then
+  mode="$1"
+  shift
+else
+  mode='+'
+fi
+
+if [ "$mode" = '.' ]
+then
+  [ -r $conf ] && cat $conf
+  exit 0
+fi
+
+if [ "$mode" = '/' ]
+then
+  for prog in $*
+  do
+    pid=$(pidof "$prog")
+    kill -URG $pid
+    echo "$prog: $pid"
+  done
+  exit 0
+fi
+
+prog='*'
+source='*'
+func='*'
+if [ $# = 2 ]
+then
+  prog="$1"
+  func="$2"
+elif [ $# = 3 ]
+then
+  prog="$1"
+  source="$2"
+  func="$3"
+else
+  Die "Wrong number of arguments"
+fi
+
+pid=$(pidof "$1")
+[ -n "$pid" ] || Die "Cannot find program \"$prog\"" 
+echo "$mode $prog $source $func" >> $conf
+kill -URG $pid
