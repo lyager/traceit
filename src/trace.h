@@ -4,6 +4,10 @@
 /*
  * This is a simple trace facility for multi-threaded programs.
  *
+ * Created by Jesper L. Nielsen <lyager\gmail.com>
+ *
+ * License: LGPL
+ *
  * API
  * ---
  *

@@ -18,7 +18,7 @@ A shell script provided that is used to change the content of trace.conf on the 
 
 ## License
 
-Software is provided as is. You can use it, link it statically, but please
+Distributed under LGPL. Use it, but don't change the license and please
 send constructive feedback and changes/additions back.
 
 For the greater good..
