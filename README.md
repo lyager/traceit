@@ -6,21 +6,21 @@ A tool for tracing and debugging already running programs.
 It works by using defines for logging information in your C-code in the
 format
 
-	> TRACE(LOG_DEBUG, "This is a test");
+> TRACE(LOG_DEBUG, "This is a test");
 
 If the above is run, by default you will get the output send to your
 syslog, see section "Environment Variables" for more info.
 
 Available log levels are:
 
-	* LOG_EMERG
-	* LOG_ALERT
-	* LOG_CRIT
-	* LOG_ERR
-	* LOG_WARNING
-	* LOG_NOTICE
-	* LOG_INFO
-	* LOG_DEBUG
+ * LOG_EMERG
+ * LOG_ALERT
+ * LOG_CRIT
+ * LOG_ERR
+ * LOG_WARNING
+ * LOG_NOTICE
+ * LOG_INFO
+ * LOG_DEBUG
 	
 If no `trace.conf` file is loaded only log level above LOG_INFO will be
 output.
