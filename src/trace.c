@@ -1,6 +1,8 @@
 /* 
  * trace.c -- A simple trace facility for multi-threaded programs.
  *
+ * vim:sw=3
+ *
  */
 
 #define _GNU_SOURCE
@@ -167,7 +169,7 @@ static bool str_to_bool(const char *value)
 	     || strcasecmp(value, "nil") == 0
 	     || strcasecmp(value, "nay") == 0
 	     || strcasecmp(value, "-") == 0
-	     || strcmp(value, "0") == 0);
+	     || strncmp(value, "0", 1) == 0);
 }
 
 /* Prepend an entry to the configuration list. */
@@ -321,11 +323,12 @@ static void load_conf(void)
 	    int offset = 0;
 
 	    /* Get the optional + or - prefix. */
-	    if (strcmp(token_vector[0], "-") == 0) {
+	    if (strncmp(token_vector[0], "-", 1) == 0) {
 		on = false;
 		offset = 1;
-	    } else if (strcmp(token_vector[0], "+") == 0)
+	    } else if (strncmp(token_vector[0], "+", 1) == 0) {
 		offset = 1;
+	    }
 
 	    if (fnmatch(token_vector[offset],
 			program_invocation_short_name, 0))
@@ -334,7 +337,7 @@ static void load_conf(void)
 	    /* <program> <name> = <value> */
 	    if (offset == 0
 		&& token_count == 4
-		&& strcmp(token_vector[2], "=") == 0)
+		&& strncmp(token_vector[2], "=", 1) == 0)
 		set_conf(token_vector[1], token_vector[3]);
 	    else {
 		switch (token_count - offset) {
@@ -400,7 +403,7 @@ void trace_init(void)
     if (!inited) {
 	inited = true;
 	char *file = getenv("TRACEFILE");
-	if (file && strcmp(file, "") == 0)
+	if (file && strlen(file) == 0)
 	    use_syslog = false;
 	load_conf();
 	/* Register an empty signal handler for SIGURG, this is needed
